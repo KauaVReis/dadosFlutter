@@ -155,13 +155,13 @@ class _EstadoTelaJogoDados extends State<TelaJogoDados> {
   String _mensagemResultado = ''; //Mensagem que mostra o resultado do jogo
 
   // Mapear as associações do numero dado referente ao link
-  final Map<int, String> imagensDados = {
-    1: 'https://i.imgur.com/1xqPfjc.png&#39',
-    2: 'https://i.imgur.com/5ClIegB.png&#39',
-    3: 'https://i.imgur.com/hjqY13x.png&#39',
-    4: 'https://i.imgur.com/CfJnQt0.png&#39',
-    5: 'https://i.imgur.com/6oWpSbf.png&#39',
-    6: 'https://i.imgur.com/drgfo7s.png&#39',
+final Map<int, String> imagensDados = {
+    1: 'https://i.imgur.com/1xqPfjc.png',
+    2: 'https://i.imgur.com/5ClIegB.png',
+    3: 'https://i.imgur.com/hjqY13x.png',
+    4: 'https://i.imgur.com/CfJnQt0.png',
+    5: 'https://i.imgur.com/6oWpSbf.png',
+    6: 'https://i.imgur.com/drgfo7s.png',
   };
 
   // Logica da pontuação: verifica o bolo de chocolate + cobertura para aplicar ao forno
@@ -202,12 +202,13 @@ class _EstadoTelaJogoDados extends State<TelaJogoDados> {
       // Determina o resultado do jogo
       if (pontuacaoJogador1 > pontuacaoJogador2) {
         _mensagemResultado =
-            '${widget.nomeJogador1} vence com $pontuacaoJogador1 pontos!';
+        '${widget.nomeJogador1} vence!\n${widget.nomeJogador1}: $pontuacaoJogador1 pts\n${widget.nomeJogador2}: $pontuacaoJogador2 pts';
       } else if (pontuacaoJogador2 > pontuacaoJogador1) {
         _mensagemResultado =
-            '${widget.nomeJogador2} vence com $pontuacaoJogador2 pontos!';
+        '${widget.nomeJogador2} vence!\n${widget.nomeJogador1}: $pontuacaoJogador1 pts\n${widget.nomeJogador2}: $pontuacaoJogador2 pts';
       } else {
-        _mensagemResultado = 'Empate com $pontuacaoJogador1 pontos cada!';
+        _mensagemResultado =
+        'Empate!\nAmbos com $pontuacaoJogador1 pontos.';
       }
     });
   }
@@ -226,12 +227,12 @@ class _EstadoTelaJogoDados extends State<TelaJogoDados> {
             mainAxisAlignment:
                 MainAxisAlignment.center, // é o justify content do css
             children: lancamentos
-            // transforma o numero do dado em uma widget de imagem
+                // transforma o numero do dado em uma widget de imagem
                 .map(
                   (valor) => Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Image.network(
-                      imagensDados[valor]!,
+                      imagensDados[valor]!, //pega a url do mapa usando o valor do dado
                       width: 50,
                       height: 50,
                       errorBuilder: (context, error, stackTrace) {
@@ -240,7 +241,41 @@ class _EstadoTelaJogoDados extends State<TelaJogoDados> {
                     ),
                   ),
                 )
-                .toList(),
+                .toList(), //converte o resultado do map em uma lista de widgets
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Jogo de Dados')),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              // Constrói a coluna do jogador 1
+              _contruirColunaJogador(widget.nomeJogador1, _lancamentosJogador1),
+              // Constrói a coluna do jogador 2
+              _contruirColunaJogador(widget.nomeJogador2, _lancamentosJogador2),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            _mensagemResultado,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const Spacer(), // Empurra o botão para a parte inferior da tela
+          ElevatedButton(
+            onPressed: _lancarDados, // Chama a função para lançar os dados
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(double.infinity, 50),
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+            ),
+            child: const Text('Lançar Dados'),
           ),
         ],
       ),
